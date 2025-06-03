@@ -1,0 +1,13 @@
+[project]
+name = "app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "asyncpg>=0.30.0",
+    "fastapi>=0.115.12",
+    "sqids>=0.5.2",
+    "tortoise-orm>=0.25.0",
+    "uvicorn>=0.34.3",
+]
