@@ -6,8 +6,20 @@ from pydantic import AfterValidator, BaseModel, Field
 
 
 def is_url(value: str) -> str:
+    """Валидация URL адресов
+
+    Args:
+        value (str): значение для валидации
+
+    Raises:
+        ValueError: неверный URL адрес
+
+    Returns:
+        str: URL адрес
+    """
+    value = value.strip()
     http_and_https_pattern = re.compile(
-        r"^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$"
+        r"(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+"
     )
     if not http_and_https_pattern.match(value):
         raise ValueError("URL адрес не является корректным!")
@@ -15,6 +27,18 @@ def is_url(value: str) -> str:
 
 
 def is_my_url(value: str) -> str:
+    """Проверка, что передаваемый URL "мой" адрес(с localhost:8080)
+
+    Args:
+        value (str): URL адрес
+
+    Raises:
+        ValueError: URL адрес сгенерирован не этим сервисом
+
+    Returns:
+        str: URL адрес
+    """
+    value = value.strip()
     domen = "http://localhost:8080/"
     my_url = re.compile(r"^%s.{9}$" % domen)
     if not my_url.match(value):
@@ -35,36 +59,36 @@ class DeactivateShortLink(BaseModel):
 
 
 class LinkInfo(BaseModel):
-    id: int
-    link: str
-    original_link: str
-    is_active: bool
-    due_date: datetime
+    id: int = Field(description="ID ссылки в сервисе")
+    link: str = Field(description="Сгенерированная(короткая) ссылка")
+    original_link: str = Field(description="Оригинальная(длинная) ссылка")
+    is_active: bool = Field(description="Является ли ссылка активной")
+    due_date: datetime = Field(description="Дата и время истечения активности ссылки")
 
     class Config:
         from_attributes = True
 
 
 class StatisticLinkInfo(BaseModel):
-    link: str
-    orig_link: str
-    last_hour_clicks: int = 0
-    last_day_clicks: int = 0
-    is_active: bool
-    due_date: datetime
+    link: str = Field(description="Короткая(сгенерированная) ссылка")
+    orig_link: str = Field(description="Оригинальная(длинная) ссылка")
+    last_hour_clicks: int = Field(default=0, description="Кол-во посещений ссылки за последний час")
+    last_day_clicks: int = Field(default=0, description="Кол-во посещений ссылки за последний день")
+    is_active: bool = Field(description="Является ли ссылка активной")
+    due_date: datetime = Field(description="Дата и время истечения активности ссылки")
 
 
 class PaginationInfo(BaseModel):
-    page: int
-    size: int
-    total_pages: int
-    next: bool
-    prev: bool
+    page: int = Field(description="Текущая страницы")
+    size: int = Field(description="Размер выборки страницы")
+    total_pages: int = Field(description="Суммарное кол-во страниц")
+    next: bool = Field(description="Имеется ли следующая страница")
+    prev: bool = Field(description="Имеется ли предыдущая страница")
 
 
 T = TypeVar("T")
 
 
 class Message(BaseModel, Generic[T]):
-    links: List[T]
-    info: PaginationInfo
+    links: List[T] = Field(description="Список ссылок")
+    info: PaginationInfo = Field(description="Информация о пагинации выборки")
