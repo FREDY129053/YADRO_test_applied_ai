@@ -1,9 +1,18 @@
 APP_DIR = app
 VENV_DIR = .venv
 
+ifeq ($(OS),Windows_NT)
+    VENV_BIN = $(APP_DIR)/$(VENV_DIR)/Scripts
+    PYTHON = $(VENV_BIN)/python.exe
+    PIP = $(VENV_BIN)/pip.exe
+else
+    VENV_BIN = $(APP_DIR)/$(VENV_DIR)/bin
+    PYTHON = $(VENV_BIN)/python
+    PIP = $(VENV_BIN)/pip
+endif
+
 docker-db-run:
 	cd $(APP_DIR) && docker-compose up --build -d
-	cd ..
 	@echo "Docker database created."
 
 venv:
@@ -11,11 +20,11 @@ venv:
 	@echo "Virtual environment created."
 
 install: venv
-	$(APP_DIR)/$(VENV_DIR)/bin/pip install -r $(APP_DIR)/requirements.txt
+	$(PIP) install -r $(APP_DIR)/requirements.txt
 	@echo "Dependencies installed."
 
 run: install docker-db-run
-	python -m $(APP_DIR).src.main
+	$(PYTHON) -m $(APP_DIR).src.main
 
 clean:
 	rm -rf $(APP_DIR)/$(VENV_DIR)
