@@ -10,11 +10,7 @@ venv:
 	python -m venv $(APP_DIR)/$(VENV_DIR)
 	@echo "Virtual environment created."
 
-activate-venv: venv
-	$(APP_DIR)/$(VENV_DIR)/scripts/activate
-	@echo ".venv activated."
-
-install: activate-venv
+install: venv
 	$(APP_DIR)/$(VENV_DIR)/bin/pip install -r $(APP_DIR)/requirements.txt
 	@echo "Dependencies installed."
 
@@ -34,7 +30,6 @@ help:
 	@echo "Targets:"
 	@echo "  docker-db-run	 Create database in Docker"
 	@echo "  venv      Create virtual environment"
-	@echo "  activate-venv	 Activate venv"
 	@echo "  install	 Install dependencies"
 	@echo "  clean     Clean the environment"
 	@echo "  run       Set up the project (venv + Docker database)"
