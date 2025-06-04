@@ -2,7 +2,9 @@ APP_DIR = app
 VENV_DIR = .venv
 
 docker-db-run:
-	docker-compose up --build -d
+	cd $(APP_DIR) && docker-compose up --build -d
+	cd ..
+	@echo "Docker database created."
 
 venv:
 	python -m venv $(APP_DIR)/$(VENV_DIR)
