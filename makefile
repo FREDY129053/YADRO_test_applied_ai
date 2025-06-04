@@ -14,7 +14,7 @@ install: venv
 	$(APP_DIR)/$(VENV_DIR)/bin/pip install -r $(APP_DIR)/requirements.txt
 	@echo "Dependencies installed."
 
-run: activate-venv docker-db-run
+run: install docker-db-run
 	python -m $(APP_DIR).src.main
 
 clean:
