@@ -11,7 +11,7 @@ venv:
 	@echo "Virtual environment created."
 
 activate-venv: venv
-	python $(APP_DIR)/$(VENV_DIR)/scripts/activate
+	$(APP_DIR)/$(VENV_DIR)/scripts/activate
 	@echo ".venv activated."
 
 install: activate-venv
