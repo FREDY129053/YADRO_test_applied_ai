@@ -24,6 +24,7 @@ install: venv
 	@echo "Dependencies installed."
 
 run: install docker-db-run
+	timeout 6
 	$(PYTHON) -m $(APP_DIR).main
 
 clean:
