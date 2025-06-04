@@ -7,8 +7,6 @@ from typing import Literal
 import app.src.repository as URLRepository
 from app.src.schemas import LinkInfo, Message, PaginationInfo, StatisticLinkInfo
 
-domen = f"{os.getenv('DOMEN')}/"
-
 
 async def get_all_links(
     filter: Literal["all", "active", "inactive"], page: int, size: int
@@ -104,7 +102,7 @@ async def generate_url(url: str) -> str | None:
     short_token = "".join(
         random.SystemRandom().choice(string.ascii_letters + string.digits) for _ in range(9)
     )
-    short_link = f"{domen}{short_token}"
+    short_link = f"{os.getenv('DOMEN')}/{short_token}"
     due_date = datetime.now(timezone.utc) + timedelta(minutes=int(os.getenv("EXPIRE_MINUTES", 1)))
 
     is_in_db = await URLRepository.write_short_link(
@@ -126,7 +124,7 @@ async def get_original_url(short_link: str) -> str | None:
     Returns:
         str | None: оригинальная ссылка или None если ссылки нет(неактивна)
     """
-    short_link = domen + short_link
+    short_link = f"{os.getenv('DOMEN')}/" + short_link
     result = await URLRepository.get_orig_link(short_link=short_link)
     if not result or not result.is_active:
         return None
