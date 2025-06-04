@@ -3,15 +3,24 @@ from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from apscheduler.triggers.cron import CronTrigger
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from app.src.router import router
 from app.src.db import init_db_tortoise
+from app.src.repository import change_expired_links_status
 
+scheduler = AsyncIOScheduler()
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
-
     await init_db_tortoise(_app)
+    
+    scheduler.add_job(
+        change_expired_links_status,
+        CronTrigger(second='*/30')
+    )
+    scheduler.start()
     yield
 
 

@@ -56,3 +56,7 @@ async def write_short_link(original_link: str, short_link: str, due_date: dateti
     except Exception as e:
         print(f"\033[031mERROR:\t  {e}\033[0m]")
         return False
+
+async def change_expired_links_status():
+    print(f"\033[034mCRON:\033[0m\t  {datetime.now(timezone.utc)}")
+    await URLInfo.filter(is_active=True, due_date__lt=datetime.now(timezone.utc)).update(is_active=False)
