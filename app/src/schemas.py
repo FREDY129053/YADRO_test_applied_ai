@@ -57,6 +57,12 @@ class DeactivateShortLink(BaseModel):
     ]
 
 
+class CreatedLinkData(BaseModel):
+    created_url: str = Field(description="Сгенерированная ссылка")
+    original_url: str = Field(description="Оригинальная(исходная) ссылка")
+    due_date: datetime = Field(description="Дата и время истечения активности ссылки")
+
+
 class LinkInfo(BaseModel):
     id: int = Field(description="ID ссылки в сервисе")
     link: str = Field(description="Сгенерированная(короткая) ссылка")

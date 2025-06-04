@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Literal
 
 import app.src.repository as URLRepository
-from app.src.schemas import LinkInfo, Message, PaginationInfo, StatisticLinkInfo
+from app.src.schemas import LinkInfo, Message, PaginationInfo, StatisticLinkInfo, CreatedLinkData
 
 
 async def get_all_links(
@@ -89,14 +89,14 @@ async def get_stats(page: int, size: int) -> Message[StatisticLinkInfo]:
     )
 
 
-async def generate_url(url: str) -> str | None:
+async def generate_url(url: str) -> CreatedLinkData | None:
     """Создание короткой ссылик
 
     Args:
         url (str): оригинальная ссылка из которой нужно создать короткую
 
     Returns:
-        str | None: созданна ссылка или None при ошибке создания
+        CreatedLinkData | None: данные созданной ссылкы или None при ошибке создания
     """
     # Случайная строка длины 9
     short_token = "".join(
@@ -112,7 +112,11 @@ async def generate_url(url: str) -> str | None:
     if not is_in_db:
         return None
 
-    return short_link
+    return CreatedLinkData(
+        created_url=short_link,
+        original_url=url,
+        due_date=due_date
+    )
 
 
 async def get_original_url(short_link: str) -> str | None:

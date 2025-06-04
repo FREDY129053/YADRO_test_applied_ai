@@ -20,6 +20,7 @@ async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     validate_environment()
     await init_db_tortoise(_app)
 
+    # Проверяем актуальность ссылок не только при переходе
     scheduler.add_job(change_expired_links_status, CronTrigger(second="*/15"))
     scheduler.start()
     yield

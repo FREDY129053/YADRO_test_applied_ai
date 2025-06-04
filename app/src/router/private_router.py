@@ -6,6 +6,7 @@ from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 import app.src.services as URLService
 from app.src.schemas import (
+    CreatedLinkData,
     CreateShortLink,
     DeactivateShortLink,
     ErrorSchema,
@@ -45,7 +46,7 @@ async def get_links_stats(
     responses={
         201: {
             "description": "Link created",
-            "content": {"application/json": {"schema": {"message": "created link"}}},
+            "content": {"application/json": {"schema": CreatedLinkData.model_json_schema()}},
         },
         400: {
             "description": "Cannot create link",
@@ -61,7 +62,7 @@ async def generate_short_url(
     if not created:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="cannot create link")
 
-    return JSONResponse(content={"message": created}, status_code=status.HTTP_201_CREATED)
+    return created
 
 
 @private_router.put(
