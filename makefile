@@ -24,7 +24,7 @@ install: venv
 	@echo "Dependencies installed."
 
 run: install docker-db-run
-	$(PYTHON) -m $(APP_DIR).src.main
+	$(PYTHON) -m $(APP_DIR).main
 
 clean:
 	rm -rf $(APP_DIR)/$(VENV_DIR)
