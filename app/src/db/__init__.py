@@ -1,13 +1,14 @@
+import os
+
 from fastapi import FastAPI
 from tortoise import Tortoise
 from tortoise.contrib.fastapi import register_tortoise
 
 
 async def init_db_tortoise(_app: FastAPI):
-
     TORTOISE_ORM = {
         "connections": {
-            "default": "postgres://postgres:12345@localhost:5433/url_shorter_db"
+            "default": f"postgres://{os.getenv('DB_USERNAME')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
         },
         "apps": {
             "models": {

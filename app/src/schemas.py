@@ -1,3 +1,4 @@
+import os
 import re
 from datetime import datetime
 from typing import Annotated, Generic, List, TypeVar
@@ -18,9 +19,7 @@ def is_url(value: str) -> str:
         str: URL адрес
     """
     value = value.strip()
-    http_and_https_pattern = re.compile(
-        r"(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+"
-    )
+    http_and_https_pattern = re.compile(r"(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+")
     if not http_and_https_pattern.match(value):
         raise ValueError("URL адрес не является корректным!")
     return value
@@ -39,7 +38,7 @@ def is_my_url(value: str) -> str:
         str: URL адрес
     """
     value = value.strip()
-    domen = "http://localhost:8080/"
+    domen = f"{os.getenv('DOMEN')}/"
     my_url = re.compile(r"^%s.{9}$" % domen)
     if not my_url.match(value):
         raise ValueError("URL адрес сгенерирован не этим сервисом")
@@ -92,3 +91,7 @@ T = TypeVar("T")
 class Message(BaseModel, Generic[T]):
     links: List[T] = Field(description="Список ссылок")
     info: PaginationInfo = Field(description="Информация о пагинации выборки")
+
+
+class ErrorSchema(BaseModel):
+    detail: str = Field(description="Описание ошибки")
